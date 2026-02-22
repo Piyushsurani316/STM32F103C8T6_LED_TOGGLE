@@ -1,0 +1,35 @@
+name: STM32 CI Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install ARM Toolchain
+      run: |
+        sudo apt update
+        sudo apt install -y gcc-arm-none-eabi make cppcheck
+
+    - name: Static Analysis
+      run: cppcheck --enable=all --inconclusive --error-exitcode=1 .
+
+    - name: Build Firmware
+      run: make
+
+    - name: Upload Firmware
+      uses: actions/upload-artifact@v4
+      with:
+        name: firmware
+        path: |
+          *.elf
+          *.bin
+          *.hex
