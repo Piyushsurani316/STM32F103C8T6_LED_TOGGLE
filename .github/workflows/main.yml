@@ -11,32 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Checkout your GitHub repo
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # 2️⃣ Install ARM GCC Toolchain + Cppcheck
     - name: Install ARM GCC and Cppcheck
       run: |
         sudo apt update
         sudo apt install -y gcc-arm-none-eabi make cppcheck
 
-    # 3️⃣ Run Cppcheck on application code ONLY
     - name: Static Analysis with Cppcheck
       run: |
         cppcheck --enable=warning,performance,portability,information \
         --inconclusive \
         --suppress=missingIncludeSystem \
         --suppress=unusedFunction \
-        --exclude=Drivers \
-        --exclude=Middlewares \
         Core/Src
 
-    # 4️⃣ Build firmware
     - name: Build STM32 Firmware
       run: make all
 
-    # 5️⃣ Upload firmware artifacts (.elf, .bin, .hex)
     - name: Upload Firmware
       uses: actions/upload-artifact@v4
       with:
