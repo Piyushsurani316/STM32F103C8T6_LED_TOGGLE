@@ -11,14 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+    # 1️⃣ Checkout code
+    - uses: actions/checkout@v4
 
+    # 2️⃣ Install ARM GCC + Cppcheck
     - name: Install ARM GCC and Cppcheck
       run: |
         sudo apt update
         sudo apt install -y gcc-arm-none-eabi make cppcheck
 
+    # 3️⃣ Static Analysis (application code only)
     - name: Static Analysis with Cppcheck
       run: |
         cppcheck --enable=warning,performance,portability,information \
@@ -27,14 +29,18 @@ jobs:
         --suppress=unusedFunction \
         Core/Src
 
+    # 4️⃣ Build firmware (Debug folder)
     - name: Build STM32 Firmware
-      run: make all_build   # ← changed from 'all'
+      run: |
+        cd Debug
+        make
 
+    # 5️⃣ Upload firmware artifacts
     - name: Upload Firmware
       uses: actions/upload-artifact@v4
       with:
         name: firmware
         path: |
-          *.elf
-          *.bin
-          *.hex
+          Debug/*.elf
+          Debug/*.bin
+          Debug/*.hex
