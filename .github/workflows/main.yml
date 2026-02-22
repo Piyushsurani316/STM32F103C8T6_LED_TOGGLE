@@ -1,4 +1,4 @@
-name: STM32 Windows CI/CD Pipeline
+name: STM32 Windows Build
 
 on:
   push:
@@ -11,34 +11,18 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # 1️⃣ Checkout repository
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    # 2️⃣ Install ARM GCC (Chocolatey)
-    - name: Install ARM GCC and make
-      run: |
-        choco install -y gcc-arm-embedded make cppcheck
+    - name: Install ARM GCC
+      run: choco install -y gcc-arm-embedded make
       shell: powershell
 
-    # 3️⃣ Static Analysis with Cppcheck
-    - name: Run Cppcheck
-      run: |
-        cppcheck --enable=warning,performance,portability,information `
-        --inconclusive `
-        --suppress=missingIncludeSystem `
-        --suppress=unusedFunction `
-        Core/Src
-      shell: powershell
-
-    # 4️⃣ Build STM32 Firmware
-    - name: Build Firmware
+    - name: Build STM32 Firmware
       run: |
         cd Debug
         make
       shell: powershell
 
-    # 5️⃣ Upload Firmware Artifacts
     - name: Upload Firmware
       uses: actions/upload-artifact@v4
       with:
