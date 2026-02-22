@@ -1,4 +1,4 @@
-name: STM32 Windows Build
+name: STM32 Windows Build Pipeline
 
 on:
   push:
@@ -13,14 +13,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install ARM GCC
+    - name: Install ARM GCC and make
       run: choco install -y gcc-arm-embedded make
       shell: powershell
 
-    - name: Build STM32 Firmware
+    - name: Build Firmware
       run: |
+        # Build in Debug folder
         cd Debug
         make
+
+        # List files to confirm
+        dir
+
       shell: powershell
 
     - name: Upload Firmware
@@ -28,6 +33,6 @@ jobs:
       with:
         name: firmware
         path: |
-         Debug\*.elf
+          Debug\*.elf
           Debug\*.bin
           Debug\*.hex
