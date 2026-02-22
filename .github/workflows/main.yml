@@ -28,6 +28,6 @@ jobs:
       with:
         name: firmware
         path: |
-          Debug/*.elf
-          Debug/*.bin
-          Debug/*.hex
+         Debug\*.elf
+          Debug\*.bin
+          Debug\*.hex
