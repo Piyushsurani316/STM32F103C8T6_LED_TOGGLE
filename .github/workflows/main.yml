@@ -11,28 +11,26 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    # 1️⃣ Checkout repository
     - uses: actions/checkout@v4
 
+    # 2️⃣ Install ARM GCC and make
     - name: Install ARM GCC and make
       run: choco install -y gcc-arm-embedded make
       shell: powershell
 
+    # 3️⃣ Build STM32 Firmware
     - name: Build Firmware
       run: |
-        # Build in Debug folder
-        cd Debug
         make
-
-        # List files to confirm
-        dir
-
       shell: powershell
 
+    # 4️⃣ Upload Firmware Artifacts
     - name: Upload Firmware
       uses: actions/upload-artifact@v4
       with:
         name: firmware
         path: |
-          Debug\*.elf
-          Debug\*.bin
-          Debug\*.hex
+          *.elf
+          *.bin
+          *.hex
